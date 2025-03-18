@@ -34,23 +34,21 @@ public class AuthenticationController {
     }
 
 
+    @PostMapping("/register")
+    public ResponseEntity register(@RequestBody @Validated RegisterDTO data){
+        if(this.userRepository.findByLogin(data.login())!= null) return ResponseEntity
+        .badRequest().build();
+        User newUser = new User(data.login(), data.password(), data.role());
+
+        this.userRepository.save(newUser);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Validated AuthenticationDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         return ResponseEntity.ok().build(); 
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Validated RegisterDTO data){
-        if(this.userRepository.findByLogin(data.login())!= null) return ResponseEntity
-        .badRequest().build();
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.login(), encryptedPassword, data.role());
-
-        this.userRepository.save(newUser);
-        return ResponseEntity.ok().build();
     }
 }

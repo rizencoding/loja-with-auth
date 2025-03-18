@@ -24,7 +24,7 @@ public class SecurityConfigurations {
                                .requestMatchers(HttpMethod.POST,"/auth/register").permitAll()
                                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                                .requestMatchers(HttpMethod.POST,"/product").hasRole("ADMIN")
-                               .anyRequest().authenticated()
+                               .anyRequest().permitAll()
         )   
         .build(); 
     }
@@ -32,9 +32,5 @@ public class SecurityConfigurations {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(); 
     }
 }
